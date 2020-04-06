@@ -15,3 +15,11 @@ func (ec *ExampleController) Ping(c *gin.Context) {
 		"msg": "Pong",
 	})
 }
+
+func (ec *ExampleController) NotFound(c *gin.Context) {
+	c.Status(http.StatusNotFound)
+}
+
+func (ec *ExampleController) OK(c *gin.Context) {
+	c.Status(http.StatusOK)
+}

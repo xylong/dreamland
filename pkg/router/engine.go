@@ -6,8 +6,13 @@ import (
 )
 
 func Default() *gin.Engine {
-	engine := gin.Default()
+	engine := gin.New()
+	engine.Use(recovery)
+	engine.Use(responseHandler)
+
 	engine.GET("/ping", ctrl.Example.Ping)
+	engine.GET("/404", ctrl.Example.NotFound)
+	engine.GET("/ok", ctrl.Example.OK)
 
 	return engine
 }
