@@ -14,5 +14,7 @@ func Default() *gin.Engine {
 	engine.GET("/404", ctrl.Example.NotFound)
 	engine.GET("/ok", ctrl.Example.OK)
 
+	engine.POST("/register", ctrl.Authorization.Login)
+
 	return engine
 }

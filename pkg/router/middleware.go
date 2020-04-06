@@ -3,10 +3,27 @@ package router
 import (
 	"dreamland/pkg"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/locales/zh"
+	"github.com/go-playground/universal-translator"
+	"github.com/go-playground/validator/v10"
+	zh_translations "github.com/go-playground/validator/v10/translations/zh"
 	"log"
 	"net/http"
 	"runtime"
 )
+
+var (
+	validate *validator.Validate
+	trans    ut.Translator
+)
+
+func init() {
+	ZH := zh.New()
+	uni := ut.New(ZH)
+	trans, _ = uni.GetTranslator("zh")
+	validate = validator.New()
+	zh_translations.RegisterDefaultTranslations(validate, trans)
+}
 
 func responseHandler(c *gin.Context) {
 	c.Next()
@@ -36,9 +53,11 @@ func recovery(c *gin.Context) {
 				if e.Code >= http.StatusInternalServerError {
 					log.Printf("%s\n%s", err, buf)
 				}
+
 				c.AbortWithStatusJSON(e.Code, gin.H{
 					"msg": e.Msg,
 				})
+
 				return
 			}
 			log.Printf("%s\n%s", err, buf)
