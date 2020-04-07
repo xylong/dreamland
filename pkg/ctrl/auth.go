@@ -15,7 +15,7 @@ type AuthenticateController struct {
 func (a *AuthenticateController) Login(c *gin.Context) {
 	var register validate.RegisterRequest
 	c.Bind(&register)
-	err := pkg.Validate.Struct(register)
+	err := pkg.NewValidator().Struct(register)
 	if err != nil {
 		pkg.PanicError(http.StatusBadRequest, err)
 	}
