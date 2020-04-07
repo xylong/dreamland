@@ -2,8 +2,17 @@ package pkg
 
 import (
 	"errors"
+	"github.com/go-playground/validator/v10"
 	"net/http"
 )
+
+var (
+	Validate *validator.Validate
+)
+
+func init() {
+	Validate = validator.New()
+}
 
 type Error struct {
 	Err  error

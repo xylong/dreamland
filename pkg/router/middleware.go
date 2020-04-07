@@ -13,16 +13,14 @@ import (
 )
 
 var (
-	validate *validator.Validate
-	trans    ut.Translator
+	trans ut.Translator
 )
 
 func init() {
 	ZH := zh.New()
 	uni := ut.New(ZH)
 	trans, _ = uni.GetTranslator("zh")
-	validate = validator.New()
-	zh_translations.RegisterDefaultTranslations(validate, trans)
+	zh_translations.RegisterDefaultTranslations(pkg.Validate, trans)
 }
 
 func responseHandler(c *gin.Context) {
@@ -54,8 +52,15 @@ func recovery(c *gin.Context) {
 					log.Printf("%s\n%s", err, buf)
 				}
 
+				// 翻译
+				var message string
+				for _, item := range e.Err.(validator.ValidationErrors) {
+					message = item.Translate(trans)
+					log.Println(message)
+					break
+				}
 				c.AbortWithStatusJSON(e.Code, gin.H{
-					"msg": e.Msg,
+					"msg": message,
 				})
 
 				return
