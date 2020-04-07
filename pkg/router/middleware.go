@@ -20,7 +20,8 @@ func responseHandler(c *gin.Context) {
 
 	if c.Writer.Status() == http.StatusOK && c.Writer.Size() <= 0 {
 		c.JSON(http.StatusOK, gin.H{
-			"msg": "ok",
+			"code": 0,
+			"msg":  "ok",
 		})
 		return
 	}
