@@ -18,10 +18,15 @@ func responseHandler(c *gin.Context) {
 		return
 	}
 
-	if c.Writer.Status() == http.StatusOK && c.Writer.Size() <= 0 {
+	if c.Writer.Status() == http.StatusOK {
+		data := c.Keys
+		if len(data) == 0 {
+			data = gin.H{}
+		}
 		c.JSON(http.StatusOK, gin.H{
 			"code": 0,
 			"msg":  "ok",
+			"data": data,
 		})
 		return
 	}
