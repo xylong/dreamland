@@ -1,4 +1,4 @@
-package router
+package middleware
 
 import (
 	"dreamland/pkg"
@@ -8,7 +8,7 @@ import (
 	"runtime"
 )
 
-func responseHandler(c *gin.Context) {
+func ResponseHandler(c *gin.Context) {
 	c.Next()
 
 	if c.Writer.Status() == http.StatusNotFound && c.Writer.Size() <= 0 {
@@ -32,7 +32,7 @@ func responseHandler(c *gin.Context) {
 	}
 }
 
-func recovery(c *gin.Context) {
+func Recovery(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
 			buf := make([]byte, 65536)
@@ -50,7 +50,6 @@ func recovery(c *gin.Context) {
 
 				return
 			}
-			log.Printf("%s\n%s", err, buf)
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 				"msg": "服务出错，请稍后尝试",
 			})
