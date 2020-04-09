@@ -6,6 +6,7 @@ import (
 )
 
 type User interface {
+	Find(maps interface{}) (user *model.User, err error)
 	Insert(user *model.User) (id uint, err error)
 	IsEmailExit(email string) bool
 }
@@ -15,6 +16,12 @@ func NewUser() User {
 }
 
 type user struct {
+}
+
+func (u *user) Find(maps interface{}) (user *model.User, err error) {
+	user = &model.User{}
+	err = db.DB.Where(maps).First(user).Error
+	return
 }
 
 func (u *user) Insert(user *model.User) (id uint, err error) {

@@ -15,7 +15,7 @@ var (
 type UserController struct {
 }
 
-func (u *UserController) Login(c *gin.Context) {
+func (u *UserController) Register(c *gin.Context) {
 	var register validate.RegisterRequest
 	c.Bind(&register)
 	register.Check(&register)

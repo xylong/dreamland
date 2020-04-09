@@ -9,6 +9,7 @@ import (
 )
 
 type UserService interface {
+	Login(req *validate.LoginRequest) (user *model.User, err error)
 	Register(req *validate.RegisterRequest) (string, error)
 }
 
@@ -18,6 +19,20 @@ func NewUserService() UserService {
 
 type User struct {
 	user dao.User
+}
+
+func (u *User) Login(req *validate.LoginRequest) (user *model.User, err error) {
+	user, err = u.user.Find(&model.User{
+		Email: req.Email,
+	})
+	if err != nil {
+		return
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
+	if err != nil {
+		return nil, errors.New("密码错误")
+	}
+	return
 }
 
 func (u *User) Register(req *validate.RegisterRequest) (string, error) {
