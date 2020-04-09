@@ -4,6 +4,7 @@ import (
 	"dreamland/pkg/dao"
 	"dreamland/pkg/model"
 	"dreamland/pkg/validate"
+	"errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -20,6 +21,9 @@ type User struct {
 }
 
 func (u *User) Register(req *validate.RegisterRequest) (string, error) {
+	if u.user.IsEmailExit(req.Email) {
+		return "", errors.New("邮箱已被注册")
+	}
 	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
