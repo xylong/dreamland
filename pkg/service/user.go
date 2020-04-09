@@ -3,13 +3,15 @@ package service
 import (
 	"dreamland/pkg/dao"
 	"dreamland/pkg/model"
+	"dreamland/pkg/util"
 	"dreamland/pkg/validate"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
+	"strconv"
 )
 
 type UserService interface {
-	Login(req *validate.LoginRequest) (user *model.User, err error)
+	Login(req *validate.LoginRequest) (token string, err error)
 	Register(req *validate.RegisterRequest) (string, error)
 }
 
@@ -21,8 +23,8 @@ type User struct {
 	user dao.User
 }
 
-func (u *User) Login(req *validate.LoginRequest) (user *model.User, err error) {
-	user, err = u.user.Find(&model.User{
+func (u *User) Login(req *validate.LoginRequest) (token string, err error) {
+	user, err := u.user.Find(&model.User{
 		Email: req.Email,
 	})
 	if err != nil {
@@ -30,8 +32,10 @@ func (u *User) Login(req *validate.LoginRequest) (user *model.User, err error) {
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
 	if err != nil {
-		return nil, errors.New("密码错误")
+		return "", errors.New("密码错误")
 	}
+	id := strconv.Itoa(int(user.ID))
+	token, err = util.GenerateToken(id, user.Name, user.Email)
 	return
 }
 

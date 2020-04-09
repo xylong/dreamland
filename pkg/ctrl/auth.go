@@ -15,9 +15,9 @@ func (a *AuthenticateController) Login(c *gin.Context) {
 	var login validate.LoginRequest
 	c.Bind(&login)
 	login.Check(&login)
-	user, err := userServce.Login(&login)
+	token, err := userServce.Login(&login)
 	if err != nil {
 		pkg.PanicIfErr(err)
 	}
-	c.Set("user", user)
+	c.Set("token", token)
 }
