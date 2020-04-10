@@ -11,7 +11,6 @@ func Default() *gin.Engine {
 	engine := gin.New()
 	engine.Use(middleware.Recovery)
 	engine.Use(middleware.ResponseHandler)
-	engine.Use(middleware.JWT())
 
 	engine.GET("/ping", ctrl.Example.Ping)
 	engine.GET("/404", ctrl.Example.NotFound)

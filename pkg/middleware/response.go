@@ -11,24 +11,12 @@ import (
 func ResponseHandler(c *gin.Context) {
 	c.Next()
 
-	if c.Writer.Status() == http.StatusNotFound && c.Writer.Size() <= 0 {
-		c.JSON(http.StatusNotFound, gin.H{
-			"msg": "not found",
+	if c.Writer.Status() != http.StatusOK {
+		c.JSON(c.Writer.Status(), gin.H{
+			"code": 1,
+			"msg":  "",
+			"data": gin.H{},
 		})
-		return
-	}
-
-	if c.Writer.Status() == http.StatusOK {
-		data := c.Keys
-		if len(data) == 0 {
-			data = gin.H{}
-		}
-		c.JSON(http.StatusOK, gin.H{
-			"code": 0,
-			"msg":  "ok",
-			"data": data,
-		})
-		return
 	}
 }
 

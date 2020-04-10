@@ -4,6 +4,7 @@ import (
 	"dreamland/pkg"
 	"dreamland/pkg/validate"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 var Authorization = AuthenticateController{}
@@ -19,5 +20,7 @@ func (a *AuthenticateController) Login(c *gin.Context) {
 	if err != nil {
 		pkg.PanicIfErr(err)
 	}
-	c.Set("token", token)
+	c.JSON(http.StatusOK, gin.H{
+		"token": token,
+	})
 }
