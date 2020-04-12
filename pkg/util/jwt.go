@@ -1,16 +1,10 @@
 package util
 
 import (
+	"dreamland/pkg"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"time"
-)
-
-var (
-	TokenExpired     error = errors.New("Token is expired.")
-	TokenNotValidYet error = errors.New("Token not active yet")
-	TokenMalformed   error = errors.New("That's not even a token")
-	TokenInvalid     error = errors.New("Couldn't handle this token:")
 )
 
 type JWT interface {
@@ -52,18 +46,19 @@ func (t *Token) Parse(token string) (*Claims, error) {
 		return t.Secret, nil
 	})
 	if err != nil {
+		code := pkg.TokenInvalid
 		if value, ok := err.(*jwt.ValidationError); ok {
 			switch {
 			case value.Errors&jwt.ValidationErrorMalformed != 0:
-				err = TokenMalformed
+				code = pkg.TokenMalformed
 			case value.Errors&jwt.ValidationErrorExpired != 0:
-				err = TokenExpired
+				code = pkg.TokenExpired
 			case value.Errors&jwt.ValidationErrorNotValidYet != 0:
-				err = TokenNotValidYet
+				code = pkg.TokenNotValidYet
 			default:
-				err = TokenInvalid
+				code = pkg.TokenInvalid
 			}
-			return nil, err
+			return nil, errors.New(pkg.GetMsg(code))
 		}
 	}
 	if tokenClaims != nil {
@@ -90,5 +85,5 @@ func (t *Token) Refresh(token string) (string, error) {
 		claims.StandardClaims.ExpiresAt = time.Now().Add(1 * time.Hour).Unix()
 		return t.Generate(claims)
 	}
-	return "", TokenInvalid
+	return "", errors.New(pkg.GetMsg(pkg.TokenInvalid))
 }
