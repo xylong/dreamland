@@ -10,10 +10,10 @@ import (
 
 func JWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.Request.Header.Get("token")
+		token := c.Request.Header.Get("Authorization")
 		if token == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{
-				"code": 1001,
+				"code": http.StatusUnauthorized,
 				"msg":  "未认证",
 			})
 			c.Abort()

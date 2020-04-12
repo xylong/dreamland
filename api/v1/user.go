@@ -20,7 +20,9 @@ type UserController struct {
 func (u *UserController) Me(c *gin.Context) {
 	claims := c.MustGet("claims").(*util.Claims)
 	c.JSON(http.StatusOK, gin.H{
-		"profile": claims,
+		"code": 0,
+		"msg":  "ok",
+		"data": claims,
 	})
 }
 
@@ -32,5 +34,9 @@ func (u *UserController) Store(c *gin.Context) {
 	if err != nil {
 		pkg.PanicIfErr(err)
 	}
-	c.Set("token", token)
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"msg":  "ok",
+		"data": token,
+	})
 }

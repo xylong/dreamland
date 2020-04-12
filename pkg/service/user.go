@@ -13,6 +13,7 @@ import (
 type UserService interface {
 	Login(req *validate.LoginRequest) (token string, err error)
 	Register(req *validate.RegisterRequest) (string, error)
+	RefreshToken(oldToken string) (string, error)
 }
 
 func NewUserService() UserService {
@@ -57,4 +58,8 @@ func (u *User) Register(req *validate.RegisterRequest) (string, error) {
 		Password: string(hash),
 	})
 	return "token", err
+}
+
+func (u *User) RefreshToken(oldToken string) (string, error) {
+	return util.NewJWT().Refresh(oldToken)
 }

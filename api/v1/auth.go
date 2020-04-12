@@ -3,6 +3,7 @@ package v1
 import (
 	"dreamland/pkg"
 	"dreamland/pkg/validate"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -21,6 +22,22 @@ func (a *AuthenticateController) Login(c *gin.Context) {
 		pkg.PanicIfErr(err)
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"token": token,
+		"data": token,
+	})
+}
+
+func (a *AuthenticateController) Current(c *gin.Context) {
+	credential := c.Request.Header.Get("Authorization")
+	if credential == "" {
+		pkg.PanicError(http.StatusUnauthorized, errors.New("未认证"))
+	}
+	token, err := userService.RefreshToken(credential)
+	if err != nil {
+		pkg.PanicIfErr(err)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": http.StatusOK,
+		"msg":  "ok",
+		"data": token,
 	})
 }
