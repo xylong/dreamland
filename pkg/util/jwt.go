@@ -16,6 +16,7 @@ var (
 type JWT interface {
 	Generate(claims *Claims) (string, error)
 	Parse(token string) (*Claims, error)
+	Refresh(token string) (string, error)
 }
 
 func NewJWT() JWT {
@@ -35,7 +36,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-// GenerateToken 生成token
+// Generate 生成token
 func (t *Token) Generate(claims *Claims) (string, error) {
 	claims.StandardClaims = jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
@@ -45,7 +46,7 @@ func (t *Token) Generate(claims *Claims) (string, error) {
 	return tokenClaims.SignedString(t.Secret)
 }
 
-// ParseToken 解析token
+// Parse 解析token
 func (t *Token) Parse(token string) (*Claims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return t.Secret, nil
@@ -71,4 +72,23 @@ func (t *Token) Parse(token string) (*Claims, error) {
 		}
 	}
 	return nil, err
+}
+
+// Refresh 刷新token
+func (t *Token) Refresh(token string) (string, error) {
+	jwt.TimeFunc = func() time.Time {
+		return time.Unix(0, 0)
+	}
+	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		return t.Secret, nil
+	})
+	if err != nil {
+		return "", err
+	}
+	if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {
+		jwt.TimeFunc = time.Now
+		claims.StandardClaims.ExpiresAt = time.Now().Add(1 * time.Hour).Unix()
+		return t.Generate(claims)
+	}
+	return "", TokenInvalid
 }
