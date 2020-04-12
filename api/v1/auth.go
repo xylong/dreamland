@@ -21,8 +21,8 @@ func (a *AuthenticateController) Login(c *gin.Context) {
 	if err != nil {
 		pkg.PanicIfErr(err)
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"data": token,
+	c.Set("data", map[string]string{
+		"token": token,
 	})
 }
 
@@ -35,9 +35,7 @@ func (a *AuthenticateController) Current(c *gin.Context) {
 	if err != nil {
 		pkg.PanicIfErr(err)
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": http.StatusOK,
-		"msg":  "ok",
-		"data": token,
+	c.Set("data", map[string]string{
+		"token": token,
 	})
 }

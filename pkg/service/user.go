@@ -12,7 +12,7 @@ import (
 
 type UserService interface {
 	Login(req *validate.LoginRequest) (token string, err error)
-	Register(req *validate.RegisterRequest) (string, error)
+	Register(req *validate.RegisterRequest) error
 	RefreshToken(oldToken string) (string, error)
 }
 
@@ -44,20 +44,20 @@ func (u *User) Login(req *validate.LoginRequest) (token string, err error) {
 	return
 }
 
-func (u *User) Register(req *validate.RegisterRequest) (string, error) {
+func (u *User) Register(req *validate.RegisterRequest) error {
 	if u.user.IsEmailExit(req.Email) {
-		return "", errors.New("邮箱已被注册")
+		return errors.New("邮箱已被注册")
 	}
 	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return "", err
+		return err
 	}
 	_, err = u.user.Insert(&model.User{
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: string(hash),
 	})
-	return "token", err
+	return err
 }
 
 func (u *User) RefreshToken(oldToken string) (string, error) {

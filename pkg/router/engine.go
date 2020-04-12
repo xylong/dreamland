@@ -15,17 +15,16 @@ func Default() *gin.Engine {
 	engine.GET("/404", ctrl.Example.NotFound)
 	engine.GET("/ok", ctrl.Example.OK)
 
-	engine.POST("/login", v1.Authorization.Login)
-
 	api := engine.Group("/api")
+	api.Use(middleware.ResponseHandler)
 	{
 		V1 := api.Group("/v1")
 		V1.POST("/register", v1.User.Store)
+		V1.POST("/login", v1.Authorization.Login)
 		V1.PUT("/authorizations/current", v1.Authorization.Current)
 
-		V1.Use(middleware.JWT(), middleware.ResponseHandler)
+		V1.Use(middleware.JWT())
 		{
-			V1.POST("/login", v1.Authorization.Login)
 			V1.GET("/user", v1.User.Me)
 		}
 	}

@@ -6,7 +6,6 @@ import (
 	"dreamland/pkg/util"
 	"dreamland/pkg/validate"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 var (
@@ -19,10 +18,8 @@ type UserController struct {
 
 func (u *UserController) Me(c *gin.Context) {
 	claims := c.MustGet("claims").(*util.Claims)
-	c.JSON(http.StatusOK, gin.H{
-		"code": 0,
-		"msg":  "ok",
-		"data": claims,
+	c.Set("data", map[string]*util.Claims{
+		"profile": claims,
 	})
 }
 
@@ -30,13 +27,7 @@ func (u *UserController) Store(c *gin.Context) {
 	var register validate.RegisterRequest
 	c.Bind(&register)
 	register.Check(&register)
-	token, err := userService.Register(&register)
-	if err != nil {
+	if err := userService.Register(&register); err != nil {
 		pkg.PanicIfErr(err)
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": 0,
-		"msg":  "ok",
-		"data": token,
-	})
 }

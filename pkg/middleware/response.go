@@ -11,13 +11,22 @@ import (
 func ResponseHandler(c *gin.Context) {
 	c.Next()
 
-	if c.Writer.Status() != http.StatusOK {
-		c.JSON(c.Writer.Status(), gin.H{
-			"code": 1,
-			"msg":  "",
-			"data": gin.H{},
-		})
+	code, ok := c.Get("code")
+	if !ok {
+		code = pkg.SUCCESS
 	}
+
+	data, ok := c.Get("data")
+	if !ok {
+		data = gin.H{}
+	}
+
+	c.JSON(c.Writer.Status(), gin.H{
+		"code": code,
+		"msg":  pkg.GetMsg(code.(int)),
+		"data": data,
+	})
+
 }
 
 func Recovery(c *gin.Context) {
