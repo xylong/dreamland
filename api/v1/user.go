@@ -1,13 +1,17 @@
 package v1
 
 import (
+	"dreamland/pkg"
+	"dreamland/pkg/service"
 	"dreamland/pkg/util"
+	"dreamland/pkg/validate"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 var (
-	User = UserController{}
+	User        = UserController{}
+	userService = service.NewUserService()
 )
 
 type UserController struct {
@@ -18,4 +22,15 @@ func (u *UserController) Me(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"profile": claims,
 	})
+}
+
+func (u *UserController) Store(c *gin.Context) {
+	var register validate.RegisterRequest
+	c.Bind(&register)
+	register.Check(&register)
+	token, err := userService.Register(&register)
+	if err != nil {
+		pkg.PanicIfErr(err)
+	}
+	c.Set("token", token)
 }

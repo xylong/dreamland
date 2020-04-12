@@ -35,7 +35,11 @@ func (u *User) Login(req *validate.LoginRequest) (token string, err error) {
 		return "", errors.New("密码错误")
 	}
 	id := strconv.Itoa(int(user.ID))
-	token, err = util.GenerateToken(id, user.Name, user.Email)
+	token, err = util.NewJWT().Generate(&util.Claims{
+		ID:    id,
+		Name:  user.Name,
+		Email: user.Email,
+	})
 	return
 }
 

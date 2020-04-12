@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"dreamland/pkg"
 	"dreamland/pkg/util"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -18,12 +19,9 @@ func JWT() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		claims, err := util.ParseToken(token)
+		claims, err := util.NewJWT().Parse(token)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"code": 401,
-				"msg":  "鉴权失败",
-			})
+			pkg.PanicError(http.StatusUnauthorized, err)
 			c.Abort()
 			return
 		} else if time.Now().Unix() > claims.ExpiresAt {

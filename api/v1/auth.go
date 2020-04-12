@@ -1,4 +1,4 @@
-package ctrl
+package v1
 
 import (
 	"dreamland/pkg"
@@ -16,7 +16,7 @@ func (a *AuthenticateController) Login(c *gin.Context) {
 	var login validate.LoginRequest
 	c.Bind(&login)
 	login.Check(&login)
-	token, err := userServce.Login(&login)
+	token, err := userService.Login(&login)
 	if err != nil {
 		pkg.PanicIfErr(err)
 	}
