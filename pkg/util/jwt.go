@@ -4,6 +4,7 @@ import (
 	"dreamland/pkg"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/spf13/viper"
 	"time"
 )
 
@@ -15,7 +16,7 @@ type JWT interface {
 
 func NewJWT() JWT {
 	return &Token{
-		[]byte("dreamland"),
+		[]byte(viper.GetString("app.secret")),
 	}
 }
 

@@ -18,9 +18,7 @@ type UserController struct {
 
 func (u *UserController) Me(c *gin.Context) {
 	claims := c.MustGet("claims").(*util.Claims)
-	c.Set("data", map[string]*util.Claims{
-		"profile": claims,
-	})
+	c.Set("data", claims)
 }
 
 func (u *UserController) Store(c *gin.Context) {
