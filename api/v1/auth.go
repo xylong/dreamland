@@ -2,7 +2,8 @@ package v1
 
 import (
 	"dreamland/pkg"
-	"dreamland/pkg/validate"
+	"dreamland/pkg/dto"
+	"dreamland/pkg/util"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -14,9 +15,9 @@ type AuthenticateController struct {
 }
 
 func (a *AuthenticateController) Login(c *gin.Context) {
-	var login validate.LoginRequest
+	var login dto.LoginRequest
 	c.Bind(&login)
-	login.Check(&login)
+	util.Validate.Struct(&login)
 	token, err := userService.Login(&login)
 	if err != nil {
 		pkg.PanicIfErr(err)

@@ -2,17 +2,17 @@ package service
 
 import (
 	"dreamland/pkg/dao"
+	"dreamland/pkg/dto"
 	"dreamland/pkg/model"
 	"dreamland/pkg/util"
-	"dreamland/pkg/validate"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
 	"strconv"
 )
 
 type UserService interface {
-	Login(req *validate.LoginRequest) (token string, err error)
-	Register(req *validate.RegisterRequest) error
+	Login(req *dto.LoginRequest) (token string, err error)
+	Register(req *dto.RegisterRequest) error
 	RefreshToken(oldToken string) (string, error)
 }
 
@@ -24,7 +24,7 @@ type User struct {
 	user dao.User
 }
 
-func (u *User) Login(req *validate.LoginRequest) (token string, err error) {
+func (u *User) Login(req *dto.LoginRequest) (token string, err error) {
 	user, err := u.user.Find(&model.User{
 		Email: req.Email,
 	})
@@ -44,7 +44,7 @@ func (u *User) Login(req *validate.LoginRequest) (token string, err error) {
 	return
 }
 
-func (u *User) Register(req *validate.RegisterRequest) error {
+func (u *User) Register(req *dto.RegisterRequest) error {
 	if u.user.IsEmailExit(req.Email) {
 		return errors.New("邮箱已被注册")
 	}

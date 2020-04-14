@@ -2,10 +2,11 @@ package v1
 
 import (
 	"dreamland/pkg"
+	"dreamland/pkg/dto"
 	"dreamland/pkg/service"
 	"dreamland/pkg/util"
-	"dreamland/pkg/validate"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 var (
@@ -22,10 +23,11 @@ func (u *UserController) Me(c *gin.Context) {
 }
 
 func (u *UserController) Store(c *gin.Context) {
-	var register validate.RegisterRequest
-	c.Bind(&register)
-	register.Check(&register)
-	if err := userService.Register(&register); err != nil {
+	req := dto.RegisterRequest{}
+	if err := req.Verify(c); err != nil {
+		pkg.PanicError(http.StatusBadRequest, err)
+	}
+	if err := userService.Register(&req); err != nil {
 		pkg.PanicIfErr(err)
 	}
 }

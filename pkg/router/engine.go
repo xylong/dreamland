@@ -16,7 +16,7 @@ func Default() *gin.Engine {
 	engine.GET("/ok", ctrl.Example.OK)
 
 	api := engine.Group("/api")
-	api.Use(middleware.ResponseHandler)
+	api.Use(middleware.ResponseHandler, middleware.Translate())
 	{
 		V1 := api.Group("/v1")
 		V1.POST("/register", v1.User.Store)
