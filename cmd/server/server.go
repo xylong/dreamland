@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"dreamland/config"
+	"dreamland/init"
 	"dreamland/pkg/db"
 	"dreamland/pkg/router"
 	"dreamland/pkg/util"
@@ -19,6 +20,7 @@ import (
 func main() {
 	config.InitConfig()
 	db.InitDB()
+	Init.InitRedis()
 	util.InitValidate()
 	engine := router.Default()
 
