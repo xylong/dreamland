@@ -4,6 +4,8 @@ var Message = map[int]string{
 	SUCCESS: "ok",
 	ERROR:   "fail",
 
+	RedisError: "Redis异常",
+
 	UNAUTHORIZED:     "未认证",
 	TokenExpired:     "令牌过期",
 	TokenNotValidYet: "令牌尚未激活",

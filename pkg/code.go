@@ -4,9 +4,11 @@ const (
 	SUCCESS = 0
 	ERROR   = 10000
 
-	UNAUTHORIZED     = 10001
-	TokenExpired     = 10002
-	TokenNotValidYet = 10003
-	TokenMalformed   = 10004
-	TokenInvalid     = 10005
+	RedisError = 10001
+
+	UNAUTHORIZED     = 20001
+	TokenExpired     = 20002
+	TokenNotValidYet = 20003
+	TokenMalformed   = 20004
+	TokenInvalid     = 20005
 )
