@@ -5,30 +5,35 @@ import (
 	"dreamland/pkg/util"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strings"
 	"time"
+)
+
+const (
+	authKey   = "Authorization"
+	sep       = " "
+	tokenType = "Bearer"
+	length    = 2
 )
 
 func JWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.Request.Header.Get("Authorization")
-		if token == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"code": http.StatusUnauthorized,
-				"msg":  "未认证",
-			})
+		authorization := c.Request.Header.Get(authKey)
+		list := strings.Split(authorization, sep)
+		if len(list) != length || list[0] != tokenType {
+			c.Status(http.StatusUnauthorized)
+			c.Set("code", pkg.TokenMalformed)
 			c.Abort()
 			return
 		}
-		claims, err := util.NewJWT().Parse(token)
+
+		claims, err := util.NewJWT().Parse(list[1])
 		if err != nil {
 			pkg.PanicError(http.StatusUnauthorized, err)
 			c.Abort()
 			return
 		} else if time.Now().Unix() > claims.ExpiresAt {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"code": 401,
-				"msg":  "授权过期",
-			})
+			c.Set("code", pkg.TokenExpired)
 			c.Abort()
 			return
 		}

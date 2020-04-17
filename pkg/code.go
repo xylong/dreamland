@@ -2,10 +2,11 @@ package pkg
 
 const (
 	SUCCESS = 0
-	ERROR   = 10001
+	ERROR   = 10000
 
-	TokenExpired     = 20001
-	TokenNotValidYet = 20002
-	TokenMalformed   = 20003
-	TokenInvalid     = 20004
+	UNAUTHORIZED     = 10001
+	TokenExpired     = 10002
+	TokenNotValidYet = 10003
+	TokenMalformed   = 10004
+	TokenInvalid     = 10005
 )

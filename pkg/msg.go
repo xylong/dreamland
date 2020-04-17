@@ -4,6 +4,7 @@ var Message = map[int]string{
 	SUCCESS: "ok",
 	ERROR:   "fail",
 
+	UNAUTHORIZED:     "未认证",
 	TokenExpired:     "令牌过期",
 	TokenNotValidYet: "令牌尚未激活",
 	TokenMalformed:   "非法令牌",
