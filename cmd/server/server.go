@@ -19,6 +19,7 @@ import (
 func main() {
 	config.InitConfig()
 	db.InitDB()
+	db.InitRedis()
 	util.InitValidate()
 	engine := router.Default()
 

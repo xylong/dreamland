@@ -12,7 +12,7 @@ import (
 // client redis链接池
 var client *redis.Client
 
-func init() {
+func InitRedis() {
 	client = redis.NewClient(&redis.Options{
 		Addr:        fmt.Sprintf("%s:%s", viper.GetString("redis.host"), viper.GetString("redis.port")),
 		Password:    viper.GetString("redis.password"),

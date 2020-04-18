@@ -14,5 +14,4 @@ func InitConfig() {
 	if err != nil {
 		panic(err)
 	}
-	viper.GetString("app.secret")
 }
